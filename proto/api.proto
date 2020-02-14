@@ -1,0 +1,83 @@
+syntax = "proto3";
+
+service Dtu {
+    rpc AccountLookup (AccountRequest) returns (AccountResponse) {}
+    rpc GetProducts (AccountResponse) returns (ProductsResponse) {}
+    rpc SendTransfer (TransferRequest) returns (TransferResponse) {}
+}
+
+message AccountRequest {
+    string number = 1;
+}
+
+message AccountResponse {
+    string providerCode = 1;
+    string regionCode = 2;
+}
+
+message ProductsResponse {
+    repeated ProductItem items = 1;
+}
+
+message ProductItem {
+    string providerCode = 1;
+    string regionCode = 2;
+    string skuCode = 3;
+    Price minimum = 4;
+    Price maximum = 5;
+
+}
+
+message Price {
+    float sendValue = 1;
+    string sendCurrencyIso = 2;
+}
+
+message TransferRequest {
+    string skuCode = 1;
+    float sendValue = 2;
+    string sendCurrencyIso = 3;
+    string accountNumber = 4;
+    bool validateOnly = 5;
+    string distributorRef = 6;
+}
+
+message TransferResponse {
+    TransferRecord transferRecord = 1;
+    float resultCode = 2;
+    repeated ErrorCodes errorCodes = 3;
+}
+
+message TransferRecord {
+    TransferId transferId = 1;
+    string skuCode = 2;
+    TransferPrice price = 3;
+    float commissionApplied = 4;
+    string startedUtc = 5;
+    string completedUtc = 6;
+    string processingState = 7;
+    string receiptText = 8;
+    string accountNumber = 9;
+}
+message TransferId {
+    string transferRef = 1;
+    string distributorRef = 2;
+}
+
+message TransferPrice {
+    float customerFee = 1;
+    float distributorFee = 2;
+    float receiveValue = 3;
+    string receiveCurrencyIso = 4;
+    float receiveValueExcludingTax = 5;
+    float taxRate = 6;
+    string taxName = 7;
+    string taxCalculation = 8;
+    float sendValue = 9;
+    string sendCurrencyIso = 10;
+}
+
+message ErrorCodes {
+    string code = 1;
+    string context = 2;
+}
